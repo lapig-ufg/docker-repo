@@ -1,2 +1,2 @@
-# docker-repo
-LAPIG docker image development repository
+# docker-pentaho
+Docker para o Pentaho BI Server utilizado pelo ILB/Interlegis
