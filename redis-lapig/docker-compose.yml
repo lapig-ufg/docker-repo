@@ -1,0 +1,23 @@
+version: "3.7"
+ 
+services:
+
+  redis-server:
+    hostname: REDIS
+    container_name: REDIS
+    build: ./redis-server
+    image: redis-lapig
+    networks:
+       rede_lapig:
+          ipv4_address: 172.18.0.24
+    ports:
+      - '127.0.0.1:6379:6379'
+    expose:
+      - '6379'
+    volumes:  
+      - /data/containers/REDIS/data:/redis-data
+
+networks:
+    rede_lapig:
+      external: true
+      driver: bridge
