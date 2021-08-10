@@ -12,7 +12,7 @@ services:
           ipv4_address: 172.18.0.2
       restart: always
       ports:
-        - '80:5050'
+        - '127.0.0.1:5050:5050'
       expose:
         - '5050'
       volumes:
