@@ -6,7 +6,7 @@ services:
 
       hostname: pgadmin4
       container_name: pgadmin4
-      image: teste1
+      image: $YOUR_IMAGE_NAME_BUILD
       networks:
         rede_lapig:
           ipv4_address: 172.18.0.2
