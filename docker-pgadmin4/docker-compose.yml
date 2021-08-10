@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+
+    pgadmin4:
+
+      hostname: pgadmin4
+      container_name: pgadmin4
+      image: teste1
+      networks:
+        rede_lapig:
+          ipv4_address: 172.18.0.2
+      restart: always
+      ports:
+        - '80:5050'
+      expose:
+        - '5050'
+      volumes:
+        - "/etc/localtime:/etc/localtime"
+        - "/data/storage/storage:/var/lib/pgadmin"
+      shm_size: '8g'
+
+networks:
+    rede_lapig:
+      external: true
+      driver: bridge
