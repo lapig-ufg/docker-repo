@@ -20,7 +20,7 @@ https://hub.docker.com/_/postgres
 2- Define local for save data
 
 - /data/storage/postgres >> /APP/postgresql/data
-
+- LOCAL FILES		>>  CONTAINER FILES
 3- Change docker-compose.yml file to your preferences
 
 POSTGRES_PASSWORD: "Postgres2018!"
