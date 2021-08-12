@@ -1,0 +1,26 @@
+version: "3.7"
+ 
+services:
+
+  db:
+    hostname: POSTGRESQL-SERVER
+    container_name: POSTGRESQL-SERVER
+    image: postgres-lapig
+    environment:
+      POSTGRES_PASSWORD: "Postgres2018!"
+      PGDATA: "/APP/postgresql/data"
+    restart: always  
+    networks:
+       rede_lapig:
+          ipv4_address: 172.18.0.4
+    ports:
+      - '127.0.0.1:5432:5432'
+    expose:
+      - '5432'
+    volumes:  
+      - /data/storage/postgres:/APP/postgresql/data
+
+networks:
+    rede_lapig:
+      external: true
+      driver: bridge
