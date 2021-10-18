@@ -1,6 +1,6 @@
 FROM dpage/pgadmin4
 
-MAINTAINER Renato Gomes renatogomes256@gmail.com
+MAINTAINER Renato Gomes renatogomessilverio@gmail.com
 LABEL description="A custom PGADMIN4 LTS container"
 
 COPY ./env /pgadmin4
