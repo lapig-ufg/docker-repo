@@ -1,6 +1,6 @@
 FROM postgres:11
 
-MAINTAINER Renato Gomes renatogomes256@gmail.com
+MAINTAINER Renato Gomes renatogomessilverio@gmail.com
 LABEL description="A custom POSTGRESQL-SERVER 11 LTS container"
 
 SHELL ["/bin/bash", "-c"]
