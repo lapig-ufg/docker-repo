@@ -1,6 +1,6 @@
 FROM openjdk:8-jre-slim
 
-MAINTAINER Renato Gomes renatogomes256@gmail.com
+MAINTAINER Renato Gomes renatogomessilverio@gmail.com
 
 # Init ENV
 ENV PENTAHO_HOME /opt/pentaho
