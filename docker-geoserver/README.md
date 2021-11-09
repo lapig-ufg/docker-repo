@@ -1,0 +1,515 @@
+# lapig docker-geoserver
+
+A simple docker container that runs GeoServer influenced by this [docker recipe](https://github.com/kartoza/docker-geoserver) 
+
+### Building the image
+
+
+### Local build using repository checkout
+
+To build yourself with a local checkout using the docker-compose.build.yaml:
+
+1. Clone the GitHub repository:
+
+   ```shell
+   git clone https://github.com/lapig-ufg/docker-repo.git
+   ```
+
+   ```shell
+   cd  docker-geoserver
+   ```
+2. Edit the [.env](https://github.com/lapig/docker-geoserver/blob/master/.env) to change the build arguments:
+
+   ```
+   IMAGE_VERSION=[dockerhub tomcat](https://hub.docker.com/_/tomcat/)
+   JAVA_HOME= java home path corresponding to the tomcat version
+   WAR_URL= Default URL to fetch GeoServer war or zip file
+   STABLE_PLUGIN_URL= URL to fetch GeoServer plugins
+   DOWNLOAD_ALL_STABLE_EXTENTIONS= Specifies whether to download all stable plugins or a single one
+   DOWNLOAD_ALL_COMMUNITY_EXTENTIONS=Specifies whether to download all community plugins or a single one
+   GEOSERVER_UID=Specifies the uid to use for the user used to run GeoServer in the container
+   GEOSERVER_GID=Specifies the gid to use for the group used to run GeoServer in the container
+   ```
+
+3. Build the container and spin up the services
+   ```shell
+   cd docker-geoserver
+   docker-compose -f docker-compose-build.yml up -d --build
+   ```
+
+
+### Building with a specific version of  Tomcat
+
+To build using a specific tagged release for tomcat image set the
+`IMAGE_VERSION` build-arg to `8-jre8`: See the [dockerhub tomcat](https://hub.docker.com/_/tomcat/)
+to choose which tag you need to build against.
+
+```
+ie VERSION=2.20.0
+docker build --build-arg IMAGE_VERSION=8-jre8 --build-arg GS_VERSION=2.17.0 -t lapig/geoserver:${VERSION} .
+```
+
+For some recent builds it is necessary to set the JAVA_PATH as well (e.g. Apache Tomcat/9.0.36)
+```
+docker build --build-arg IMAGE_VERSION=9-jdk11-openjdk-slim --build-arg JAVA_HOME=/usr/local/openjdk-11/bin/java --build-arg GS_VERSION=2.17.0 -t lapig/geoserver:2.17.0 .
+```
+
+**Note:** Please check the [GeoServer documentation](https://docs.geoserver.org/stable/en/user/production/index.html) to see which tomcat versions 
+are supported.
+
+## Environment Variables
+A full list of environment variables are specified in the [.env](https://github.com/lapig/docker-geoserver/blob/master/.env) file
+
+### Default installed  plugins
+
+The image ships with the following stable plugins:
+* vectortiles-plugin
+* wps-plugin
+* printing-plugin
+* libjpeg-turbo-plugin 
+* control-flow-plugin 
+* pyramid-plugin 
+* gdal-plugin
+* monitor-plugin
+* inspire-plugin
+* csw-plugin
+
+**Note:** The plugins listed above are omitted from [Stable_plugins.txt](https://github.com/lapig/docker-geoserver/blob/master/build_data/stable_plugins.txt)
+even though they are considered [stable plugins](https://sourceforge.net/projects/geoserver/files/GeoServer/2.20.0/extensions/)
+The image activates them on startup.
+
+The image provides the necessary plugin zip files which are used when activating the
+plugins. Not all the plugins will work out of the box because some plugins have 
+extra dependencies which need to be downloaded and installed by users because of 
+their licence terms i.e [db2](https://docs.geoserver.org/stable/en/user/data/database/db2.html)
+
+Some  plugins also need extra configuration parameters i.e community plugin `s3-geotiff-plugin`
+
+####  Activate stable plugins during contain startup
+
+The environment variable `STABLE_EXTENSIONS` can be used to activate plugins listed in
+[Stable_plugins.txt](https://github.com/lapig/docker-geoserver/blob/master/build_data/stable_plugins.txt)
+
+Example
+
+```
+ie VERSION=2.20.0
+docker run -d -p 8600:8080 --name geoserver -e STABLE_EXTENSIONS=charts-plugin,db2-plugin lapig/geoserver:${VERSION} 
+
+```
+You can pass any comma-separated plugins as defined in the text file `stable_plugins.txt`
+
+**Note** Due to the nature of the plugin ecosystem, there are new plugins that are always
+being upgraded from community extensions to stable extensions. If the `stable_plugins.txt`
+hasn't been updated with the latest changes you can still pass the environment variable with
+the name of the plugin. The plugin will be downloaded and installed. 
+This might slow down the process of starting GeoServer but will ensure all plugins get
+activated
+
+####  Activate community plugins during contain startup
+
+The environment variable `COMMUNITY_EXTENSIONS` can be used to activate plugins listed in
+[community_plugins.txt](https://github.com/lapig/docker-geoserver/blob/master/build_data/community_plugins.txt)
+
+Example 
+
+``` 
+ie VERSION=2.20.0
+docker run -d -p 8600:8080 --name geoserver -e COMMUNITY_EXTENSIONS=gwc-sqlite-plugin,ogr-datastore-plugin lapig/geoserver:${VERSION} 
+
+```
+
+**Note:** Community plugins are always in flux state. There is no guarantee that 
+plugins will be accessible between each successive build. You can build the extensions
+following the guidelines from [GeoServer develop guidelines](https://docs.geoserver.org/latest/en/developer/maven-guide/index.html#building-extensions)
+
+### Using sample data
+
+Geoserver ships with sample data which can be used by users to familiarize them with software.
+This is not activated by default. You can activate it using the environment variable `SAMPLE_DATA=true` 
+
+``` 
+ie VERSION=2.20.0
+docker run -d -p 8600:8080 --name geoserver -e SAMPLE_DATA=true lapig/geoserver:${VERSION} 
+
+```
+### Running under SSL
+You can use the environment variables to specify whether you want to run the GeoServer under SSL.
+Credits to [letsencrpt](https://github.com/AtomGraph/letsencrypt-tomcat) for providing the solution to
+run under SSL. 
+
+
+If you set the environment variable `SSL=true` but do not provide the pem files (fullchain.pem and privkey.pem)
+the container will generate a self signed SSL certificates.
+
+```
+ie VERSION=2.20.0
+docker run -it --name geoserver  -e PKCS12_PASSWORD=geoserver -e JKS_KEY_PASSWORD=geoserver -e JKS_STORE_PASSWORD=geoserver -e SSL=true -p 8443:8443 -p 8600:8080 lapig/geoserver:${VERSION} 
+```
+
+If you already have your perm files (fullchain.pem and privkey.pem) you can mount the directory containing your keys as:
+
+``` 
+ie VERSION=2.20.0
+docker run -it --name geo -v /etc/certs:/etc/certs  -e PKCS12_PASSWORD=geoserver -e JKS_KEY_PASSWORD=geoserver -e JKS_STORE_PASSWORD=geoserver -e SSL=true -p 8443:8443 -p 8600:8080 lapig/geoserver:${VERSION}  
+
+```
+
+You can also use a PFX file with this image.
+Rename your PFX file as certificate.pfx and then mount the folder containing
+your pfx file. This will be converted to perm files. 
+
+**Note** When using PFX files make sure that the ALIAS_KEY you specify as
+an environment variable matches the ALIAS_KEY that was used when generating
+your PFX key.
+
+A full list of SSL variables is provided here
+* HTTP_PORT
+* HTTP_PROXY_NAME
+* HTTP_PROXY_PORT
+* HTTP_REDIRECT_PORT
+* HTTP_CONNECTION_TIMEOUT
+* HTTP_COMPRESSION
+* HTTP_SCHEME
+* HTTP_MAX_HEADER_SIZE
+* HTTPS_PORT
+* HTTPS_MAX_THREADS
+* HTTPS_CLIENT_AUTH
+* HTTPS_PROXY_NAME
+* HTTPS_PROXY_PORT
+* HTTPS_COMPRESSION
+* HTTPS_MAX_HEADER_SIZE
+* JKS_FILE
+* JKS_KEY_PASSWORD
+* KEY_ALIAS
+* JKS_STORE_PASSWORD
+* P12_FILE
+
+### Proxy Base URL
+
+For the server to report a full proxy base url, you need to pass
+the following env variable i.e
+
+``` 
+HTTP_PROXY_NAME
+HTTP_PROXY_PORT
+```
+
+For SSL based connections the env variables are:
+
+```
+HTTPS_PROXY_NAME
+HTTPS_PROXY_PORT 
+```
+
+### Removing Tomcat extras 
+
+To include Tomcat extras including docs, examples, and the manager webapp, set the
+`TOMCAT_EXTRAS` environment variable to `true`:
+
+**Note:** If `TOMCAT_EXTRAS` is set to true then you should configure  `TOMCAT_PASSWORD` 
+to use a strong password otherwise the default one is set up.
+
+```
+ie VERSION=2.20.0
+docker run -it --name geoserver  -e TOMCAT_EXTRAS=true -p 8600:8080 lapig/geoserver:${VERSION} 
+```
+
+### Upgrading image to use a specific version
+During initialization, the image will run a script that updates the passwords. This 
+is recommended to change passwords the first time that GeoServer runs. If you are migrating
+your GeoServer instance, from one a lower version to a higher one you will need to set the
+environment variable `EXISTING_DATA_DIR=true`
+
+The environment variable will ensure that the password initialization is skipped
+during the startup procedure.
+
+### Installing extra fonts
+
+If you have downloaded extra fonts you can mount the folder to the path
+`/opt/fonts`. This will ensure that all the .ttf files are copied to the correct
+path during initialisation.
+
+```
+ie VERSION=2.20.0
+docker run -v fonts:/opt/fonts -p 8080:8080 -t lapig/geoserver:${VERSION} 
+```
+
+### Other Environment variables supported
+You can also use the following environment variables to pass arguments to GeoServer:
+
+* `GEOSERVER_DATA_DIR=<PATH>`
+* `ENABLE_JSONP=<true or false>`
+* `MAX_FILTER_RULES=<Any integer>`
+* `OPTIMIZE_LINE_WIDTH=<false or true>`
+* `FOOTPRINTS_DATA_DIR=<PATH>`
+* `GEOWEBCACHE_CACHE_DIR=<PATH>`
+* `GEOSERVER_ADMIN_PASSWORD=<password>`
+* `GEOSERVER_ADMIN_USER=<username>`
+* `GEOSERVER_FILEBROWSER_HIDEFS=<false or true>`
+* `XFRAME_OPTIONS="true"` - In order to prevent clickjacking attacks GeoServer defaults to 
+setting the X-Frame-Options HTTP header to SAMEORIGIN. Controls whether the X-Frame-Options 
+filter should be set at all. Default is true
+* Tomcat properties:
+
+  * You can change the variables based on [geoserver container considerations](http://docs.geoserver.org/stable/en/user/production/container.html). These arguments operate on the `-Xms` and `-Xmx` options of the Java Virtual Machine
+  * `INITIAL_MEMORY=<size>` : Initial Memory that Java can allocate, default `2G`
+  * `MAXIMUM_MEMORY=<size>` : Maximum Memory that Java can allocate, default `4G`
+  * `ACTIVATE_ALL_COMMUNITY_EXTENTIONS` : Activates all downloaded community plugins 
+  * `ACTIVATE_ALL_STABLE_EXTENTIONS` : Activates all stable plugins previously downloaded
+  
+**Note:** Before using `ACTIVATE_ALL_STABLE_EXTENTIONS` and `ACTIVATE_ALL_COMMUNITY_EXTENTIONS`
+ensure that all prerequisites for those plugins are matched otherwise the container will not start
+and errors will result
+
+### Control flow properties
+
+The control flow module manages requests in GeoServer. Instructions on
+what each parameter mean can be read from [documentation](http://docs.geoserver.org/latest/en/user/extensions/controlflow/index.html). 
+
+* Example default values for the environment variables
+
+    * `REQUEST_TIMEOUT=60`
+    * `PARARELL_REQUEST=100`
+    * `GETMAP=10`
+    * `REQUEST_EXCEL=4`
+    * `SINGLE_USER=6`
+    * `GWC_REQUEST=16` 
+    * `WPS_REQUEST=1000/d;30s`
+
+**Note:** You should customise these variables based on the resources available with your GeoServer
+
+### Changing GeoServer password and username
+
+You can pass the environment variables to change it on runtime.
+```
+GEOSERVER_ADMIN_PASSWORD
+GEOSERVER_ADMIN_USER
+```
+
+If you forget your admin username/password or just need to reset it again you will need to 
+pass the environment variable `RESET_ADMIN_CREDENTIALS=TRUE`
+The default behaviour is to reinitialize this once.
+
+**Note:** If you do not pass the env variable `GEOSERVER_ADMIN_PASSWORD` on startup the image will generate a strong password.
+The password can be accessed from the startup logs or as a text file within the Geoserver data directory
+
+```
+docker run --name "geoserver" -e GEOSERVER_ADMIN_USER=lapig  -e GEOSERVER_ADMIN_PASSWORD=myawesomegeoserver -p 8080:8080 -d -t lapig/geoserver
+```
+
+**Note:** The docker-compose recipe uses the password `myawesomegeoserver`. It is highly
+recommended not to run the container in production using these values.
+
+#### Docker secrets
+
+To avoid passing sensitive information in environment variables, `_FILE` can be appended to
+some variables to read from files present in the container. This is particularly useful
+in conjunction with Docker secrets, as passwords can be loaded from `/run/secrets/<secret_name>` e.g.:
+
+* -e GEOSERVER_ADMIN_PASSWORD_FILE=/run/secrets/<geoserver_pass_secret>
+
+For more information see [https://docs.docker.com/engine/swarm/secrets/](https://docs.docker.com/engine/swarm/secrets/).
+
+Currently, the following environment variables 
+```
+ GEOSERVER_ADMIN_USER
+ GEOSERVER_ADMIN_PASSWORD
+ S3_USERNAME
+ S3_PASSWORD
+ TOMCAT_USER
+ TOMCAT_PASSWORD
+ PKCS12_PASSWORD
+ JKS_KEY_PASSWORD
+ JKS_STORE_PASSWORD
+```
+are supported.
+
+
+## Mounting Configs
+
+You can mount the config file to the path `/settings`. These configs will
+be used in favour of the defaults that are available from the [Build data](https://github.com/lapig/docker-geoserver/tree/master/build_data)
+directory
+
+The configs that can be mounted are
+* cluster.properties
+* controlflow.properties
+* embedded-broker.properties
+* geowebcache-diskquota-jdbc.xml
+* s3.properties
+* tomcat-users.xml
+* web.xml - for tomcat cors
+* epsg.properties - for custom GeoServer EPSG values
+* server.xml - for tomcat configurations
+* broker.xml
+
+
+Example
+```
+ docker run --name "geoserver" -e GEOSERVER_ADMIN_USER=lapig  -v /data/controlflow.properties:/settings/controlflow.properties -p 8080:8080 -d -t lapig/geoserver
+
+```
+
+
+## Running the Image 
+
+
+### Run (automated using docker-compose)
+
+**Note:** You probably want to use docker-compose for running as it will provide
+a repeatable orchestrated deployment system.
+
+
+We provide a sample ``docker-compose.yml`` file that illustrates
+how you can establish a GeoServer + PostGIS.
+
+If you are interested in the backups , add a section in the `docker-compose.yml`
+following instructions from [docker-pg-backup](https://github.com/lapig/docker-pg-backup/blob/master/docker-compose.yml#L23).
+
+If you start the stack using the compose file make sure you log in into GeoServer using username:`admin` and password:`myawesomegeoserver`.
+
+**Note** The username and password are specified in the `.env` file. It is recommended
+to change them into something more secure otherwise a strong password is generated.
+
+Please read the ``docker-compose``
+[documentation](https://docs.docker.com/compose/) for details on usage and syntax of ``docker-compose`` - it is not covered here.
+
+
+Once all the services start, test by visiting the GeoServer landing
+page in your browser: [http://localhost:8600/geoserver](http://localhost:8600/geoserver).
+
+To run in the background rather, press ``ctrl-c`` to stop the
+containers and run again in the background:
+
+```shell
+docker-compose up -d
+```
+
+**Note:** The ``docker-compose.yml`` **uses host-based volumes** so
+when you remove the containers, **all data will be kept**. Using host-based volumes ensures that your data persists between invocations of the compose file. If you need to delete the container data you need to run `docker-compose down -v`.
+
+### Reverse Proxy using NGINX
+
+You can also put Nginx in front of GeoServer to receive the http request and translate it to uwsgi.
+
+A sample `docker-compose-nginx.yml` is provided for running GeoServer and Nginx
+
+```shell
+cd sites-enabled
+docker-compose -f docker-compose-nginx.yml  up -d
+```
+Once the services are running GeoServer will be available from
+
+http://localhost/geoserver/web/
+
+### Reverse Proxy using APACHE
+
+You can also put Nginx in front of GeoServer to receive the http request and translate it to uwsgi.
+
+A sample `docker-compose-apache.yml` is provided for running GeoServer and Nginx
+
+```shell
+cd sites-enabled
+docker-compose -f docker-compose-apache.yml  up -d
+```
+Once the services are running GeoServer will be available from
+
+http://localhost/geoserver/web/
+
+### How to use ssl https with apache2 in front of geoserver
+
+# Step by step
+
+# First step:
+
+Get your valid certificate, I'm using Let's Encrypt, to generate my
+
+# Second step
+
+Get Java KeyStore (JKS) Certificates With Let's Encrypt
+
+The certificates are:
+
+-> letsencrypt.jks
+
+-> letsencrypt.p12
+
+Use this repository for this, credits to AtomGraph: https://github.com/AtomGraph/letsencrypt-tomcat
+
+```shell
+ docker run \
+    -v /etc/letsencrypt/live/your_domain.org/:/etc/letsencrypt \
+    -e LETSENCRYPT_CERT_DIR=/etc/letsencrypt \
+    -e PKCS12_PASSWORD=whateverest \
+    -e JKS_KEY_PASSWORD=whateverest \
+    -e JKS_STORE_PASSWORD=whateverest \
+    atomgraph/letsencrypt-tomcat
+```
+
+# Third step
+
+Change your docker-compose, adding environment variables at container startup
+
+```shell
+   - SSL=true
+   - PKCS12_PASSWORD=whateverest
+   - JKS_KEY_PASSWORD=whateverest
+   - JKS_STORE_PASSWORD=whateverest
+   - LETSENCRYPT_CERT_DIR=/etc/certs/live/your_domain.org
+```
+Mount this volume on your docker:
+
+```shell
+- /etc/letsencrypt:/etc/certs
+```
+# Fourth step
+
+Configure your virtual hosts on apache, I'll leave mine as an example:
+
+# your_domain.org.conf :
+
+```shell
+<VirtualHost *:80>
+	
+ServerName qghome.duckdns.org
+	
+ 
+
+
+RewriteEngine on
+RewriteCond %{SERVER_NAME} =qghome.duckdns.org
+RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</VirtualHost>
+```
+
+# your_domain.org-ssl.conf :
+
+```shell
+<IfModule mod_ssl.c>
+<VirtualHost *:443>
+
+ServerName qghome.duckdns.org
+
+
+   ProxyPreserveHost On
+   ProxyPass / https://172.22.0.2:8443/
+   ProxyPassReverse / https://172.22.0.2:8443/
+
+
+
+SSLEngine On
+SSLProxyEngine On
+SSLCertificateFile /etc/letsencrypt/live/qghome.duckdns.org/fullchain.pem
+SSLCertificateKeyFile /etc/letsencrypt/live/qghome.duckdns.org/privkey.pem
+Include /etc/letsencrypt/options-ssl-apache.conf
+</VirtualHost>
+</IfModule>
+```
+OBS: The ip 172.22.0.2 would be the ip of the container where the geoserver runs
+
+# Fifth step, Run the project:
+
+docker-compose up -d
+
+
