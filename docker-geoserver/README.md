@@ -351,6 +351,15 @@ Example
 
 ```
 
+### CORS Support
+
+The image ships with CORS support. If you however need to modify the web.xml you
+can mount `web.xml` to `/settings/` directory.
+
+## Clustering using JMS Plugin
+GeoServer supports clustering using JMS cluster plugin or using the ActiveMQ-broker. 
+
+You can read more about how to set up clustering in [kartoza clustering](https://github.com/kartoza/docker-geoserver/blob/master/clustering/README.md)
 
 ## Running the Image 
 
