@@ -359,7 +359,7 @@ can mount `web.xml` to `/settings/` directory.
 ## Clustering using JMS Plugin
 GeoServer supports clustering using JMS cluster plugin or using the ActiveMQ-broker. 
 
-You can read more about how to set up clustering in [kartoza clustering](https://github.com/lapig-ufg/docker-repo/tree/main/docker-geoserver/clustering)
+You can read more about how to set up clustering in [lapig clustering](https://github.com/lapig-ufg/docker-repo/tree/main/docker-geoserver/clustering)
 
 ## Running the Image 
 
