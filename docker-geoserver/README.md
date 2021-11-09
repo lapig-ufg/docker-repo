@@ -417,9 +417,7 @@ Once the services are running GeoServer will be available from
 
 http://localhost/geoserver/web/
 
-### How to use ssl https with apache2 in front of geoserver
-
-# Step by step
+# How to use ssl https with apache2 in front of geoserver, Step by step: 
 
 # First step:
 
