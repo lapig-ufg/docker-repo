@@ -430,7 +430,7 @@ http://localhost/geoserver/web/
 
 # First step:
 
-Get your valid certificate, I'm using Let's Encrypt, to generate my
+Get your valid certificate, In that case I'm using Letsencrypt
 
 # Second step
 
@@ -479,13 +479,13 @@ Configure your virtual hosts on apache, I'll leave mine as an example:
 ```shell
 <VirtualHost *:80>
 	
-ServerName qghome.duckdns.org
+ServerName  your_domain.org
 	
  
 
 
 RewriteEngine on
-RewriteCond %{SERVER_NAME} =qghome.duckdns.org
+RewriteCond %{SERVER_NAME} =your_domain.org
 RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </VirtualHost>
 ```
@@ -496,7 +496,7 @@ RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 <IfModule mod_ssl.c>
 <VirtualHost *:443>
 
-ServerName qghome.duckdns.org
+ServerName  your_domain.org
 
 
    ProxyPreserveHost On
@@ -507,8 +507,8 @@ ServerName qghome.duckdns.org
 
 SSLEngine On
 SSLProxyEngine On
-SSLCertificateFile /etc/letsencrypt/live/qghome.duckdns.org/fullchain.pem
-SSLCertificateKeyFile /etc/letsencrypt/live/qghome.duckdns.org/privkey.pem
+SSLCertificateFile /etc/letsencrypt/live/your_domain.org/fullchain.pem
+SSLCertificateKeyFile /etc/letsencrypt/live/your_domain.org/privkey.pem
 Include /etc/letsencrypt/options-ssl-apache.conf
 </VirtualHost>
 </IfModule>

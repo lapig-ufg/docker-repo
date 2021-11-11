@@ -1,18 +1,21 @@
 version: '3.9'
 
-volumes:
-   geoserver-data:
-
 services:
 
    geoserver:
-      image: lapig/geoserver:${GS_VERSION}
+      hostname: lapig-geoserver
+      container_name: lapig-geoserver
+      image: lapig-geoserver:latest
+      networks:
+        rede_lapig:
+           ipv4_address: 172.18.0.25
       volumes:
         - geoserver-data:/opt/geoserver/data_dir
         - /etc/letsencrypt:/etc/certs
+        - /data/storage:/STORAGE
       ports:
         - 127.0.0.1:8443:8443
-      expose:
+      expose: 
          - '8443'  
       restart: on-failure
       environment:
@@ -27,10 +30,17 @@ services:
         - JKS_KEY_PASSWORD=whateverest
         - JKS_STORE_PASSWORD=whateverest
         - LETSENCRYPT_CERT_DIR=/etc/certs/live/qghome.duckdns.org
+        - ENCODING='UTF8'
       healthcheck:
         test: curl --fail -s http://localhost:8080/ || exit 1
         interval: 1m30s
         timeout: 10s
         retries: 3
 
+volumes:
+   geoserver-data:
 
+networks:
+    rede_lapig:
+      external: true
+      driver: bridge

@@ -3,7 +3,7 @@ ARG IMAGE_VERSION=9.0-jdk11-openjdk-slim-buster
 ARG JAVA_HOME=/usr/local/openjdk-11
 FROM tomcat:$IMAGE_VERSION
 
-LABEL maintainer="Tim Sutton<tim@linfiniti.com>"
+LABEL maintainer="Renato Gomes Silverio<renatogomessilverio@gmail.com>"
 ARG GS_VERSION=2.20.0
 ARG WAR_URL=https://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/geoserver-${GS_VERSION}-war.zip
 ARG DOWNLOAD_ALL_STABLE_EXTENTIONS=1
@@ -17,7 +17,8 @@ ARG HTTPS_PORT=8443
 #Install extra fonts to use with sld font markers
 RUN apt-get -y update; apt-get -y --no-install-recommends install fonts-cantarell lmodern ttf-aenigma \
     ttf-georgewilliams ttf-bitstream-vera ttf-sjfonts tv-fonts  libapr1-dev libssl-dev  \
-    gdal-bin libgdal-java wget zip unzip curl xsltproc certbot  cabextract gettext postgresql-client figlet
+    gdal-bin libgdal-java wget zip unzip curl xsltproc certbot  cabextract gettext postgresql-client figlet \
+    htop vim procps net-tools
 
 RUN set -e \
     export DEBIAN_FRONTEND=noninteractive \
@@ -42,11 +43,12 @@ ENV \
 
 
 WORKDIR /scripts
+
 RUN groupadd -r ${GROUP_NAME} -g ${GEOSERVER_GID} && \
     useradd -m -d /home/${USER}/ -u ${GEOSERVER_UID} --gid ${GEOSERVER_GID} -s /bin/bash -G ${GROUP_NAME} ${USER}
 RUN mkdir -p  ${GEOSERVER_DATA_DIR} ${CERT_DIR} ${FOOTPRINTS_DATA_DIR} ${FONTS_DIR} \
              ${GEOWEBCACHE_CACHE_DIR} ${GEOSERVER_HOME} ${EXTRA_CONFIG_DIR} /community_plugins /stable_plugins \
-           /plugins
+           /plugins /STORAGE
 
 ADD resources /tmp/resources
 ADD build_data /build_data
@@ -62,7 +64,7 @@ RUN chmod +x /scripts/*.sh;/scripts/setup.sh \
     /usr/share/fonts/;chmod o+rw ${CERT_DIR}
 
 USER ${GEOSERVER_UID}
-RUN echo 'figlet -t "Kartoza Docker GeoServer"' >> ~/.bashrc
+RUN echo 'figlet -t "Lapig Docker GeoServer"' >> ~/.bashrc
 
 WORKDIR ${GEOSERVER_HOME}
 
