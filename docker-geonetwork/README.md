@@ -48,7 +48,7 @@ DOCKER_BUILDKIT=1 docker build -t $IMAGE_NAME --no-cache .
 
  * `` docker-compose up -d ``
 
-## Opcional - Use nginx in front of tomcat to access GeonetWork
+## Optional - Use nginx in front of tomcat to access GeonetWork
 
 * 1- Enter nginx folder
 
