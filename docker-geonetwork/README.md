@@ -57,3 +57,5 @@ DOCKER_BUILDKIT=1 docker build -t $IMAGE_NAME --no-cache .
 * 3- Modify docker-compose.yml environment variables referring to your settings
 
 * 4- Run docker-compose.yml ``docker-compose up -d ``
+
+* 5- Access in browser: `` http://localhost/geonetwork ``
