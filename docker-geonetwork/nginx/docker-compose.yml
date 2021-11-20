@@ -1,0 +1,44 @@
+version: '3.7'
+services:
+
+    geonetwork:
+      hostname: geonetwork
+      container_name: geonetwork  
+      image: geonetwork:3.10.8
+      restart: always
+      networks:
+        rede_lapig:
+      ports:
+        - 127.0.0.1:8080:8080
+      environment:
+        DATA_DIR: /var/lib/geonetwork_data
+        POSTGRES_DB_HOST: 172.18.0.4
+        POSTGRES_DB_NAME: geonetwork
+        POSTGRES_DB_PORT: 5432
+        POSTGRES_DB_USERNAME: postgres 
+        POSTGRES_DB_PASSWORD: Postgres2018!  
+        ES_HOST: NONE
+      volumes:
+        - /home/renato/GeonetWork/APP:/var/lib/geonetwork_data
+
+    nginx:
+      hostname: nginx2
+      container_name: nginx2
+      image: nginx-geonetwork
+      restart: always
+      networks:
+        rede_lapig:
+      ports:
+        - 80:80
+      depends_on:
+        -  geonetwork  
+      
+networks:
+    rede_lapig:
+      external: true
+      driver: bridge
+
+volumes:
+  geonetwork:
+
+

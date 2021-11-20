@@ -46,4 +46,14 @@ DOCKER_BUILDKIT=1 docker build -t $IMAGE_NAME --no-cache .
 
 ## 5- Modify the docker-compose.yml file to your liking and start the container
 
-docker-compose up -d
+ * `` docker-compose up -d ``
+
+## Opcional - Use nginx in front of tomcat to access GeonetWork
+
+* 1- Enter nginx folder
+
+* 2- Build the image docker build -t nginx-geonetwork .
+
+* 3- Modify docker-compose.yml environment variables referring to your settings
+
+* 4- Run docker-compose.yml ``docker-compose up -d ``

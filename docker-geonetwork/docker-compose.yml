@@ -9,7 +9,7 @@ services:
     networks:
        rede_lapig:
     ports:
-      - 8080:8080
+      - 127.0.0.1:8080:8080
     environment:
       DATA_DIR: /var/lib/geonetwork_data
       POSTGRES_DB_HOST: 172.18.0.4
@@ -19,7 +19,7 @@ services:
       POSTGRES_DB_PASSWORD: Postgres2018!  
       ES_HOST: NONE
     volumes:
-      - /home/user/GeonetWork/APP:/var/lib/geonetwork_data
+      - /home/renato/GeonetWork/APP:/var/lib/geonetwork_data
 networks:
     rede_lapig:
       external: true
