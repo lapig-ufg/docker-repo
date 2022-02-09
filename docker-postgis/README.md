@@ -1,4 +1,4 @@
-# Postgres 14 e Postgis 3.2.0
+# PostgreSQL 14 e Postgis 3.2.0
 Essa imagem garante que o banco de dados padrão criada pela `postgres` image oficial [aqui](https://registry.hub.docker.com/_/postgres/).
 
  imagem master terá as seguintes extensões instaladas:
