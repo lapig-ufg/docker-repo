@@ -4,7 +4,7 @@ LABEL maintainer="PostGIS Project - https://postgis.net"
 
 ENV POSTGIS_VERSION 3.2.0
 ENV POSTGIS_SHA256 c725d1be6d57ad199bbb6393cc3546defb70de1c78fe1787f7ccef2d51c3647b
-ARG PG_PASSWORD="password"
+ENV PG_PASSWORD password
 
 RUN set -eux \
     \
