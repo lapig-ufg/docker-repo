@@ -16,9 +16,14 @@ A menos que use -e POSTGRES_DB ele seja passado para o contêiner no momento da 
 
 ## Uso
 
+Criar um .env definindo sua password do banco de dados postgres:
+
+    cp .env-example .env
+    defina no seu arquivo sua senha: `PG_PASSWORD=password`
+
 Para executar um contêiner básico capaz de servir um banco de dados habilitado para PostGIS, inicie um contêiner da seguinte forma:
 
-    docker run --name some-postgis -e POSTGRES_PASSWORD=mysecretpassword -d postgis/postgis
+    docker-compose up -d
 
 Para obter instruções mais detalhadas sobre como iniciar e controlar seu contêiner Postgres, consulte a documentação da postgresimagem aqui `postgres` image [aqui](https://registry.hub.docker.com/_/postgres/).
 
@@ -39,7 +44,3 @@ Depois de iniciar um contêiner de banco de dados, você pode se conectar ao ban
 Verifique a documentação sobre a [`postgres` image](https://registry.hub.docker.com/_/postgres/) and [Docker networking](https://docs.docker.com/network/) imagem e a rede do Docker para obter mais detalhes e alternativas sobre como conectar diferentes contêineres.
 
 Consulte a documentação do [PostGIS ](http://postgis.net/docs/postgis_installation.html#create_new_db_extensions) para obter mais detalhes sobre suas opções para criar e usar um banco de dados habilitado para o espaço.
-
-# Persistir Dados:
-
-##
