@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+
+  db:
+    hostname: postgres-postgis
+    container_name: postgres-postgis
+    image: postgis/postgis:latest 
+    environment:
+        - PG_PASSWORD=${PG_PASSWORD}
+        - POSTGRES_HOST_AUTH_METHOD=trust
+    restart: on-failure 
+    ports:
+      - '127.0.0.1:5432:5432'
+    expose:
+      - '5432'
+    volumes:
+        - postgis-data:/var/lib/postgresql/data
+    healthcheck:
+        test: curl --fail -s http://127.0.0.1:5432/ || exit 1
+        interval: 1m30s
+        timeout: 10s
+        retries: 3
+
+networks:
+    rede_lapig:
+      external: true
+      driver: bridge
+
+volumes:
+  postgis-data:
