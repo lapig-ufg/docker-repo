@@ -7,7 +7,7 @@ SHELL ["/bin/bash", "-c"]
 
 RUN set -eux; \
 apt-get update; \ 
-apt-get -y install htop net-tools curl vim procps screen postgresql-11-postgis-2.5; \
+apt-get -y install htop net-tools curl vim procps screen; \
 rm -rf /var/lib/apt/lists/*; 
 
 COPY ./postgres_bin/postgresql.conf /var/lib/postgresql/
