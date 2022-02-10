@@ -1,10 +1,9 @@
 FROM postgres:14-alpine3.15
 
-LABEL maintainer="PostGIS Project - https://postgis.net"
+LABEL maintainer="Renato Gomes Silverio<renatogomessilverio@gmail.com>"
 
 ENV POSTGIS_VERSION 3.2.0
 ENV POSTGIS_SHA256 c725d1be6d57ad199bbb6393cc3546defb70de1c78fe1787f7ccef2d51c3647b
-ENV PG_PASSWORD password
 
 RUN set -eux \
     \
