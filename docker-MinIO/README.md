@@ -1,4 +1,4 @@
-# lapig MinIO
+# LAPIG MinIO
 
 ### Building the image
 
@@ -16,7 +16,7 @@ git clone https://github.com/lapig-ufg/docker-repo.git
 ```shell
 cd  docker-MinIO
 ```
-2. Edit the [.env](https://github.com/lapig-ufg/docker-repo/blob/main/docker-MinIO/.env-example) to change the build arguments:
+2. Edit the [.env](https://github.com/lapig-ufg/docker-repo/blob/main/docker-MinIO/.env-example) to set user and password:
 ```
 cp .env-example .env
 ```
