@@ -1,4 +1,5 @@
 # LAPIG MinIO
+![alt text]([http://url/to/img.png](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgbLzy_Dc44a7a1TIMPy5tOe3RNHQpmzpGPWDm9NaxuvTgDPDdBCPfoTWAiv4iZPYPJiU&usqp=CAU))
 
 ### Building the image
 
