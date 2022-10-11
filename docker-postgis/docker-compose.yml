@@ -6,6 +6,7 @@ services:
     hostname: postgres-postgis
     container_name: postgres-postgis
     image: postgis/postgis:latest 
+    shm_size: 8g
     environment:
         - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
         - "POSTGRES_HOST_AUTH_METHOD=password"
