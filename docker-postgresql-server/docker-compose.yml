@@ -6,6 +6,7 @@ services:
     hostname: POSTGRESQL-SERVER
     container_name: POSTGRESQL-SERVER
     image: postgres-lapig
+    shm_size: 8g
     environment:
       POSTGRES_PASSWORD: "Postgres2018!"
       PGDATA: "/APP/postgresql/data"
