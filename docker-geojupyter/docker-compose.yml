@@ -9,7 +9,6 @@ services:
       - "8888:8888"
     environment: 
       - JUPYTER_ENABLE_LAB=yes
-      - JUPYTERHUB_API_TOKEN=123456
     volumes: 
       - jupyter-data:/home/jovyan
 
