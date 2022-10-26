@@ -1,4 +1,4 @@
-  version: '3.9'
+ version: '3.9'
 
   services:
 
@@ -11,7 +11,16 @@
          - "PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}"
          - "PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}" 
          - "PGADMIN_CONFIG_CONSOLE_LOG_LEVEL=10"
+         - "PGADMIN_LISTEN_PORT=5050"
+      command: "chown -R 5050:5050 /var/lib/pgadmin/storage"
+      ports:
+          - '5050:5050'
+      expose:
+          - '5050'     
       restart: always
       volumes:
         - '/etc/localtime:/etc/localtime'
-        - '/data/storage:/var/lib/pgadmin/storage'
+        - 'pgadmin:/var/lib/pgadmin4/storage'
+
+  volumes:
+    pgadmin:
