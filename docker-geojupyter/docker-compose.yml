@@ -9,8 +9,10 @@ services:
       - "8888:8888"
     environment: 
       - JUPYTER_ENABLE_LAB=yes
+      - JPASSWORD='12345678'
     volumes: 
-      - jupyter-data:/home/jovyan
+      - /docker/jupyter:/home/jovyan
+
 
 volumes:
   jupyter-data:
