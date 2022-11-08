@@ -12,11 +12,13 @@ version: '3.9'
               - "MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}"
               - "MINIO_DOMAIN=minio.host.com"
           restart: on-failure
-          command: server --console-address ':9001' --address ':9000' /mnt/data
+          command: server --console-address 'minio.host.com.br:9001' --address 'api.host.com.br:9000' /mnt/data
           ports:
             - '9001:9001'
+            - '9000:9000'
           expose:
             - '9001'
+            - '9000'
           volumes:
               - 'minio-data:/mnt/data'
               - '/etc/localtime:/etc/localtime'
