@@ -26,7 +26,12 @@ MINIO_ROOT_USER=admin
 MINIO_ROOT_PASSWORD=password123
  ```
 
+```
+3. Edit the [.hosts](https://github.com/lapig-ufg/docker-repo/blob/main/docker-MinIO/hosts) set your domain names:
+```
+
 3. Build the container and spin up the services
  ```shell
- docker-compouse up -d
+127.0.0.1     minio.host.com.br
+127.0.0.1     api.host.com.br
  ```
