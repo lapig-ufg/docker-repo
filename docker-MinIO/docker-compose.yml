@@ -1,21 +1,25 @@
-version: "3.9"
+version: '3.9'
 
-services:
+  services:
 
-  minio:
-    build: .
-    hostname: minio
-    container_name: minio
-    environment:
-        - "MINIO_ROOT_USER=${MINIO_ROOT_USER}"
-        - "MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}"
-    restart: on-failure 
-    ports:
-      - '9001:9001'
-    expose:
-      - '9001'
-    volumes:
-        - minio-data:/mnt/data
+      minio:
 
+          hostname: minio
+          container_name: minio
+          image: minio:latest
+          environment:
+              - "MINIO_ROOT_USER=${MINIO_ROOT_USER}"
+              - "MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}"
+              - "MINIO_DOMAIN=minio.host.com"
+          restart: on-failure
+          command: server --console-address ':9001' --address ':9000' /mnt/data
+          ports:
+            - '9001:9001'
+          expose:
+            - '9001'
+          volumes:
+              - 'minio-data:/mnt/data'
+              - '/etc/localtime:/etc/localtime'
+              - './hosts:/etc/hosts'
 volumes:
   minio-data:
