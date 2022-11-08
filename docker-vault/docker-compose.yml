@@ -6,8 +6,13 @@
         container_name: vault-server
         image: vault:latest
         restart: always
+        networks:
+            frontend:
+                ipv4_address: 172.10.0.5
         ports:
-          - "8200:8200/tcp"
+          - "8200:8200"
+        expose:
+          - "8200"
         volumes:
           - vault-data:/vault/data
           - vault-logs:/vault/logs
@@ -18,9 +23,10 @@
            - IPC_LOCK
         entrypoint: vault server -config=/etc/vault/config.hcl
   networks:
-        rede_lapig:
-          external: true
-          driver: bridge
+    frontend:
+      ipam:
+        config:
+          - subnet: 172.10.0.0/24
   volumes:
     vault-data:
     vault-logs:
