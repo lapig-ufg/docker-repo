@@ -1,0 +1,27 @@
+  version: '3.9'
+
+  services:
+    vault:
+        hostname: vault-server
+        container_name: vault-server
+        image: vault:latest
+        restart: always
+        ports:
+          - "8200:8200/tcp"
+        volumes:
+          - vault-data:/vault/data
+          - vault-logs:/vault/logs
+          - vault-file:/vault/file
+          - './config.hcl:/etc/vault/config.hcl' 
+          - '/etc/localtime:/etc/localtime'
+        cap_add:
+           - IPC_LOCK
+        entrypoint: vault server -config=/etc/vault/config.hcl
+  networks:
+        rede_lapig:
+          external: true
+          driver: bridge
+  volumes:
+    vault-data:
+    vault-logs:
+    vault-file:
