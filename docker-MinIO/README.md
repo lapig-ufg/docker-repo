@@ -34,7 +34,7 @@ MINIO_ROOT_PASSWORD=password123
 127.0.0.1     api.host.com.br
  ```
  
- ```
+```
 4. Edit the [.hosts](https://github.com/lapig-ufg/docker-repo/blob/main/docker-MinIO/docker-compose.yml) set your domain names:
 ```
  ```shell
