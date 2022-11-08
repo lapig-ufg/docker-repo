@@ -24,19 +24,22 @@ cp .env-example .env
 ```
 MINIO_ROOT_USER=admin 
 MINIO_ROOT_PASSWORD=password123
- ```
-
 ```
-3. Edit the [.hosts](https://github.com/lapig-ufg/docker-repo/blob/main/docker-MinIO/hosts) set your domain names:
+3. Edit the [hosts](https://github.com/lapig-ufg/docker-repo/blob/main/docker-MinIO/hosts)  set your domain names:
 ```
- ```shell
+vim hosts
+```
+```
 127.0.0.1     minio.host.com.br
 127.0.0.1     api.host.com.br
- ```
- 
 ```
-4. Edit the [.hosts](https://github.com/lapig-ufg/docker-repo/blob/main/docker-MinIO/docker-compose.yml) set your domain names:
+4. Edit the [hosts](https://github.com/lapig-ufg/docker-repo/blob/main/docker-MinIO/docker-compose.ym;)  set your domain names:
 ```
- ```shell
+vim docker-compose.yml
+```
+```
 --console-address 'minio.host.com.br:9001' --address 'api.host.com.br:9000'
- ```
+```
+5. Run Project:
+```
+docker-compose up -d
