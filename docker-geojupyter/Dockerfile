@@ -51,13 +51,22 @@ RUN mamba install --quiet --yes \
     'networkx' \
     'dask' \
     'bokeh' \
-    'psycopg2' && \
-    pip install jupyterlab_tabnine earthengine-api && \
+    'localtileserver' \
+    'keplergl' \ 
+    'pydeck' \ 
+    'leafmap' \
+    'pyarrow' \
+    'psycopg2' \
+    'geoalchemy2' \
+    'jupyter-resource-usage' && \
+    pip install earthengine-api && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}" &&\
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-leaflet &&\
+    jupyter labextension install @shahinrostami/theme-purple-please &&\
     jupyter server --generate-config &&\
-    echo -e '\
-c = get_config()  # noqa \n\
-c.ServerApp.token = "${JUPYTER_TOKEN_PASS}"\n\
+    echo 'c = get_config()  # noqa \
+c.ServerApp.token = "${JUPYTER_TOKEN_PASS}" \
+c.ResourceUseDisplay.track_cpu_percent = True \
 ' > /home/jovyan/.jupyter/jupyter_server_config.py
