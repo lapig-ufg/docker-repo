@@ -1,0 +1,14 @@
+version: '3.3'
+services:
+    rstudio:
+        ports:
+            - '8787:8787'
+        container_name: rstudio_server
+        volumes:
+            - '/home/lapig/docker/r/packages/:/packages'
+            - '/home/lapig/docker/r/home:/home'
+        environment:
+            - PASSWORD=password
+            - USERID=1000
+            - GROUPID=1000
+        image: 'davetang/rstudio:4.0.5'
